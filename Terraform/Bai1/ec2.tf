@@ -1,21 +1,19 @@
 resource "aws_instance" "web" {
   ami             = "ami-0f62d9254ca98e1aa"
   instance_type   = "t2.micro"
-  key_name        = aws_key_pair.generated_key.key_name
+  key_name        = "${var.stage}-${var.keyname}"
   security_groups = ["site_ssh"]
-  user_data = file("script.sh")
+  user_data       = file("script.sh")
   tags = {
-    Name = "nginxphp"
+    Name = "aws02"
   }
-
-  //Copy folder travel vào thư mục /home/ec2-user/
   provisioner "file" {
     source      = "./html"
     destination = "/home/ec2-user"
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file("./${var.keyname}.pem")
+      private_key = file("./${var.stage}-${var.keyname}.pem")
       host        = aws_instance.web.public_ip
     }
   }
@@ -25,7 +23,7 @@ resource "aws_instance" "web" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file("./${var.keyname}.pem")
+      private_key = file("./${var.stage}-${var.keyname}.pem")
       host        = aws_instance.web.public_ip
     }
   }
