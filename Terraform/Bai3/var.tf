@@ -8,3 +8,11 @@ variable "keyname" {
   type        = string
   default     = "keypair"
 }
+
+variable "project" {
+  description = "Name of project"
+  type        = string
+  default     = "aws03"
+}
+
+

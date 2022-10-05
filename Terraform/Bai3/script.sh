@@ -1,19 +1,19 @@
 #!/bin/bash
 sudo su
 yum update -y
-amazon-linux-extras install nginx1 -y
+amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+yum install -y httpd mariadb-server
+systemctl enable httpd
+service httpd start
+usermod -a -G apache ec2-user
+chown -R ec2-user:apache /var/www
+chmod 2775 /var/www
+find /var/www -type d -exec chmod 2775 {} \;
+find /var/www -type f -exec chmod 0664 {} \;
+cd /var/www/html
+echo 'Public host name:<b> ' `wget -q -O - http://169.254.169.254/latest/meta-data/public-hostname` '</b><br>' > index.html
+echo 'Public IPv4:<b> ' `wget -q -O - http://169.254.169.254/latest/meta-data/public-ipv4` '</b><br>' >> index.html
+echo 'Instance id:<b> ' `wget -q -O - http://169.254.169.254/latest/meta-data/instance-id` '</b><br>' >> index.html
+echo  'Avalibility Zone: <b>' `wget -q -O - http://169.254.169.254/latest/meta-data/placement/availability-zone` '</b><br>' >> index.html
 
-# Install PHP 8.1
-amazon-linux-extras enable php8.0
-yum clean metadata
-yum install php php-cli php-mysqlnd php-pdo php-common php-fpm -y
-yum install php-gd php-mbstring php-xml php-dom php-intl php-simplexml -y
-systemctl enable php-fpm
-systemctl enable nginx
-
-cp /home/ec2-user/sites.conf /etc/nginx/conf.d/ # copy config site
-mv /home/ec2-user/html /var/www/ # cp content site
-
-# Start Nginx
-service nginx start
-service php-fpm start
+curl https://raw.githubusercontent.com/hashicorp/learn-terramino/master/index.php -O
