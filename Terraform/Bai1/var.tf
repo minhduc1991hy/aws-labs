@@ -1,7 +1,7 @@
 variable "stage" {
   description = "stage of code"
   type        = string
-  default     = "dev"
+  default     = "aws01"
 }
 variable "keyname" {
   description = "Name of keypair"
